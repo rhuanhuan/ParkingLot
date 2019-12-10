@@ -7,6 +7,7 @@ import lombok.Setter;
 import tw.aebp.vehicle.Vehicle;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class BaseParking implements ParkingLot{
 
@@ -14,19 +15,19 @@ public class BaseParking implements ParkingLot{
     @Setter
     private int capacity;
 
+    @Getter
+    private UUID uuid;
+
+    @Getter
     private HashMap<Passport, Vehicle> parkingMap = new HashMap<>();
 
-    public BaseParking(int capacity, HashMap<Passport, Vehicle> parkingMap) {
-        this.capacity = capacity;
-        this.parkingMap = parkingMap;
-    }
-
     public BaseParking(int capacity) {
+        this.uuid = UUID.randomUUID();
         this.capacity = capacity;
     }
 
     @Override
-    public synchronized Passport park(Vehicle vehicle) throws Exception {
+    public Passport park(Vehicle vehicle) throws Exception {
         if (this.capacity > 0) {
             this.capacity -= 1;
             BasePassport passport = new BasePassport();
@@ -39,7 +40,7 @@ public class BaseParking implements ParkingLot{
     }
 
     @Override
-    public synchronized Vehicle pickUp(Passport passport) throws Exception {
+    public Vehicle pickUp(Passport passport) throws Exception {
         Vehicle vehicle = this.parkingMap.get(passport);
         if (vehicle != null) {
             this.parkingMap.remove(passport);
